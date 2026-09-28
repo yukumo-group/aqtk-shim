@@ -1,0 +1,47 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "x64",
+      "displayName": "MSVC x64",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "x64",
+        "strategy": "set"
+      },
+      "binaryDir": "${sourceDir}/build/x64"
+    },
+    {
+      "name": "x86",
+      "displayName": "MSVC x86",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "Win32",
+        "strategy": "set"
+      },
+      "binaryDir": "${sourceDir}/build/x86"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "x64-debug",
+      "configurePreset": "x64",
+      "configuration": "Debug"
+    },
+    {
+      "name": "x64-release",
+      "configurePreset": "x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "x86-debug",
+      "configurePreset": "x86",
+      "configuration": "Debug"
+    },
+    {
+      "name": "x86-release",
+      "configurePreset": "x86",
+      "configuration": "Release"
+    }
+  ]
+}

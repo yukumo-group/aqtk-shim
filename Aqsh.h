@@ -24,7 +24,7 @@ enum AqVersion {
 };
 
 struct AqSynthParam {
-    int version;
+    AqVersion version;
 
     // --- Aqtk1 + shared params ---
     // aq1/aq10: presets; aq2: phont path / name;
@@ -48,7 +48,7 @@ AQSH_API int AqShim_Init(void);
 AQSH_API void AqShim_Shutdown(void);
 AQSH_API int AqShim_Synthesize(
     const char* text,
-    const struct AqSynthParam* param,
+    const AqSynthParam* param,
     unsigned char** out_wav_data,
     int* out_wav_size
 );
