@@ -115,3 +115,7 @@ foreach(_voice IN LISTS AQTK1_VOICES)
 endforeach()
 aqtk_stage_dll("${AQTK2_VENDOR_DLL}" "AquesTalk2.dll")
 aqtk_stage_dll("${AQTK10_VENDOR_DLL}" "AquesTalk10.dll")
+
+add_executable(aqtk_demo demo/main.cpp)
+target_link_libraries(aqtk_demo PRIVATE Aqsh)
+target_compile_options(aqtk_demo PRIVATE /utf-8)

@@ -42,6 +42,13 @@
       "name": "x86-release",
       "configurePreset": "x86",
       "configuration": "Release"
+    },
+    {
+      "name": "demo",
+      "displayName": "Yukkuri demo (x64 Debug)",
+      "configurePreset": "x64",
+      "configuration": "Debug",
+      "targets": ["aqtk_demo"]
     }
   ]
 }
