@@ -23,11 +23,25 @@ enum AqVersion {
     AQ_VER_10 = 10
 };
 
+// AquesTalk1 voice libraries. 0 is f1 so a zeroed AqSynthParam keeps that voice.
+enum Aq1Preset {
+    AQ1_F1 = 0,
+    AQ1_F2,
+    AQ1_F3,
+    AQ1_M1,
+    AQ1_M2,
+    AQ1_R1,
+    AQ1_DVD,
+    AQ1_IMD1,
+    AQ1_JGR,
+    AQ1_PRESET_COUNT
+};
+
 struct AqSynthParam {
     AqVersion version;
 
     // --- Aqtk1 + shared params ---
-    // aq1/aq10: presets; aq2: phont path / name;
+    // aq1: Aq1Preset; aq10: presets; aq2: phont path / name;
     int preset;
     int speed;
 

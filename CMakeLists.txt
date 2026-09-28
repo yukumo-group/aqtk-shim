@@ -21,15 +21,19 @@ else()
 endif()
 
 set(AQTK_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
-set(AQTK1_VOICE "f1" CACHE STRING "AquesTalk1 voice DLL to stage as AquesTalk1.dll")
-set_property(CACHE AQTK1_VOICE PROPERTY STRINGS dvd f1 f2 f3 imd1 jgr m1 m2 r1)
-
-set(AQTK1_VENDOR_DLL "${AQTK_ROOT}/tk1/aqtk1_win/${AQTK_LIBDIR}/${AQTK1_VOICE}/AquesTalk.dll")
+# Same order as Aq1Preset.
+set(AQTK1_VOICES f1 f2 f3 m1 m2 r1 dvd imd1 jgr)
 set(AQTK2_VENDOR_LIB "${AQTK_ROOT}/tk2/aqtk2-win/${AQTK_LIBDIR}/AquesTalk2.lib")
 set(AQTK2_VENDOR_DLL "${AQTK_ROOT}/tk2/aqtk2-win/${AQTK_LIBDIR}/AquesTalk2.dll")
 set(AQTK10_VENDOR_DLL "${AQTK_ROOT}/tk10/aqtk10_win/${AQTK_LIBDIR}/AquesTalk.dll")
 
-foreach(_required IN ITEMS "${AQTK1_VENDOR_DLL}" "${AQTK2_VENDOR_LIB}" "${AQTK2_VENDOR_DLL}" "${AQTK10_VENDOR_DLL}")
+foreach(_voice IN LISTS AQTK1_VOICES)
+    set(_aqtk1_dll "${AQTK_ROOT}/tk1/aqtk1_win/${AQTK_LIBDIR}/${_voice}/AquesTalk.dll")
+    if(NOT EXISTS "${_aqtk1_dll}")
+        message(FATAL_ERROR "Missing AquesTalk SDK file: ${_aqtk1_dll}")
+    endif()
+endforeach()
+foreach(_required IN ITEMS "${AQTK2_VENDOR_LIB}" "${AQTK2_VENDOR_DLL}" "${AQTK10_VENDOR_DLL}")
     if(NOT EXISTS "${_required}")
         message(FATAL_ERROR "Missing AquesTalk SDK file: ${_required}")
     endif()
@@ -72,12 +76,10 @@ function(aqtk_renamed_implib symbol_prefix library_name out_lib)
     set_source_files_properties("${out_lib}" PROPERTIES GENERATED TRUE)
 endfunction()
 
-set(AQTK1_IMPLIB "${CMAKE_CURRENT_BINARY_DIR}/AquesTalk1.lib")
 set(AQTK10_IMPLIB "${CMAKE_CURRENT_BINARY_DIR}/AquesTalk10.lib")
-aqtk_renamed_implib("AquesTalk1_" "AquesTalk1" "${AQTK1_IMPLIB}")
 aqtk_renamed_implib("AquesTalk10_" "AquesTalk10" "${AQTK10_IMPLIB}")
 
-add_custom_target(aqtk_implibs DEPENDS "${AQTK1_IMPLIB}" "${AQTK10_IMPLIB}")
+add_custom_target(aqtk_implibs DEPENDS "${AQTK10_IMPLIB}")
 
 add_library(Aqsh SHARED
     src/Aqsh.cpp
@@ -90,7 +92,6 @@ add_dependencies(Aqsh aqtk_implibs)
 target_compile_definitions(Aqsh PRIVATE AQSWRAPPER_EXPORTS)
 target_include_directories(Aqsh PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_link_libraries(Aqsh PRIVATE
-    "${AQTK1_IMPLIB}"
     "${AQTK2_VENDOR_LIB}"
     "${AQTK10_IMPLIB}"
 )
@@ -107,6 +108,10 @@ function(aqtk_stage_dll src dest_name)
     )
 endfunction()
 
-aqtk_stage_dll("${AQTK1_VENDOR_DLL}" "AquesTalk1.dll")
+foreach(_voice IN LISTS AQTK1_VOICES)
+    aqtk_stage_dll(
+        "${AQTK_ROOT}/tk1/aqtk1_win/${AQTK_LIBDIR}/${_voice}/AquesTalk.dll"
+        "AquesTalk1_${_voice}.dll")
+endforeach()
 aqtk_stage_dll("${AQTK2_VENDOR_DLL}" "AquesTalk2.dll")
 aqtk_stage_dll("${AQTK10_VENDOR_DLL}" "AquesTalk10.dll")
