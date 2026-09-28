@@ -1,4 +1,4 @@
-﻿#ifndef AQTK_SHIM_AQSH_H
+#ifndef AQTK_SHIM_AQSH_H
 #define AQTK_SHIM_AQSH_H
 
 #ifdef _WIN32

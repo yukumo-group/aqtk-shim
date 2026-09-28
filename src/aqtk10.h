@@ -1,0 +1,6 @@
+#pragma once
+
+struct AqSynthParam;
+
+unsigned char* aqtk10_synthe_utf8(const AqSynthParam* param, const char* text, int* size);
+void aqtk10_free(unsigned char* wav);

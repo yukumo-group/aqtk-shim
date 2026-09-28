@@ -79,10 +79,16 @@ aqtk_renamed_implib("AquesTalk10_" "AquesTalk10" "${AQTK10_IMPLIB}")
 
 add_custom_target(aqtk_implibs DEPENDS "${AQTK1_IMPLIB}" "${AQTK10_IMPLIB}")
 
-add_library(Aqsh SHARED Aqsh.cpp)
+add_library(Aqsh SHARED
+    src/Aqsh.cpp
+    src/aqtk1.cpp
+    src/aqtk2.cpp
+    src/aqtk10.cpp
+    src/wav_track.cpp
+)
 add_dependencies(Aqsh aqtk_implibs)
 target_compile_definitions(Aqsh PRIVATE AQSWRAPPER_EXPORTS)
-target_include_directories(Aqsh PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(Aqsh PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_link_libraries(Aqsh PRIVATE
     "${AQTK1_IMPLIB}"
     "${AQTK2_VENDOR_LIB}"
