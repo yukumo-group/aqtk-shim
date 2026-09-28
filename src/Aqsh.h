@@ -79,6 +79,9 @@ struct AqSynthParam {
     // aq1: Aq1Preset; aq2: Aq2Preset; aq10: Aq10Preset.
     int preset;
     int speed;
+    
+    // aq2 custom phont path (UTF-8). Null or empty uses preset.
+    char *phont;
 
     // --- Aqtk10 Extra Settings ---
     int base;	// 基本素片 F1E/F2E/M1E (0/1/2)
@@ -91,7 +94,6 @@ struct AqSynthParam {
     // --- Licensing ---
     char *DevKey;
     char *UserKey;
-    char *phont; // aq2 custom phont path (UTF-8). Null or empty uses preset.
 };
 
 AQSH_API int AqShim_Init(void);
