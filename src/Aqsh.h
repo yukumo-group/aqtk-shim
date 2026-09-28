@@ -37,6 +37,26 @@ enum Aq1Preset {
     AQ1_PRESET_COUNT
 };
 
+// AquesTalk2 phont files staged in phont/ next to Aqsh.dll. 0 is aq_f1c.
+// A non-empty phont path overrides this preset.
+enum Aq2Preset {
+    AQ2_AQ_F1C = 0,
+    AQ2_AQ_F3A,
+    AQ2_AQ_HUSKEY,
+    AQ2_AQ_M4B,
+    AQ2_AQ_MF1,
+    AQ2_AQ_RB2,
+    AQ2_AQ_RB3,
+    AQ2_AQ_RM,
+    AQ2_AQ_ROBO,
+    AQ2_AQ_YUKKURI,
+    AQ2_AR_F4,
+    AQ2_AR_M5,
+    AQ2_AR_MF2,
+    AQ2_AR_RM3,
+    AQ2_PRESET_COUNT
+};
+
 // AquesTalk10 gVoice_* presets. 0 uses base/speed/volume/pitch/accent/lmd/fsc.
 enum Aq10Preset {
     AQ10_CUSTOM = 0,
@@ -54,7 +74,7 @@ struct AqSynthParam {
     AqVersion version;
 
     // --- Aqtk1 + shared params ---
-    // aq1: Aq1Preset; aq10: Aq10Preset; aq2: phont path / name;
+    // aq1: Aq1Preset; aq2: Aq2Preset; aq10: Aq10Preset.
     int preset;
     int speed;
 
@@ -69,6 +89,7 @@ struct AqSynthParam {
     // --- Licensing ---
     char *DevKey;
     char *UserKey;
+    char *phont; // aq2 custom phont path (UTF-8). Null or empty uses preset.
 };
 
 AQSH_API int AqShim_Init(void);

@@ -54,7 +54,7 @@ namespace {
 int main() {
     const Engine engines[] = {
         {"aq1", L"aq1.wav", AQ_VER_1, AQ1_F1},
-        {"aq2", L"aq2.wav", AQ_VER_2, 0},
+        {"aq2", L"aq2.wav", AQ_VER_2, AQ2_AQ_YUKKURI},
         {"aq10", L"aq10.wav", AQ_VER_10, AQ10_F1},
     };
 

@@ -35,12 +35,23 @@ set(AQTK_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
 set(AQTK1_VOICES f1 f2 f3 m1 m2 r1 dvd imd1 jgr)
 set(AQTK2_VENDOR_LIB "${AQTK_ROOT}/tk2/aqtk2-win/${AQTK_LIBDIR}/AquesTalk2.lib")
 set(AQTK2_VENDOR_DLL "${AQTK_ROOT}/tk2/aqtk2-win/${AQTK_LIBDIR}/AquesTalk2.dll")
+# Same order as Aq2Preset.
+set(AQTK2_PHONTS
+    aq_f1c aq_f3a aq_huskey aq_m4b aq_mf1
+    aq_rb2 aq_rb3 aq_rm aq_robo aq_yukkuri
+    ar_f4 ar_m5 ar_mf2 ar_rm3)
 set(AQTK10_VENDOR_DLL "${AQTK_ROOT}/tk10/aqtk10_win/${AQTK_LIBDIR}/AquesTalk.dll")
 
 foreach(_voice IN LISTS AQTK1_VOICES)
     set(_aqtk1_dll "${AQTK_ROOT}/tk1/aqtk1_win/${AQTK_LIBDIR}/${_voice}/AquesTalk.dll")
     if(NOT EXISTS "${_aqtk1_dll}")
         message(FATAL_ERROR "Missing AquesTalk SDK file: ${_aqtk1_dll}")
+    endif()
+endforeach()
+foreach(_phont IN LISTS AQTK2_PHONTS)
+    set(_aqtk2_phont "${AQTK_ROOT}/tk2/aqtk2-win/phont/${_phont}.phont")
+    if(NOT EXISTS "${_aqtk2_phont}")
+        message(FATAL_ERROR "Missing AquesTalk SDK file: ${_aqtk2_phont}")
     endif()
 endforeach()
 foreach(_required IN ITEMS "${AQTK2_VENDOR_LIB}" "${AQTK2_VENDOR_DLL}" "${AQTK10_VENDOR_DLL}")
@@ -124,6 +135,15 @@ foreach(_voice IN LISTS AQTK1_VOICES)
         "AquesTalk1_${_voice}.dll")
 endforeach()
 aqtk_stage_dll("${AQTK2_VENDOR_DLL}" "AquesTalk2.dll")
+add_custom_command(TARGET Aqsh POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E make_directory "$<TARGET_FILE_DIR:Aqsh>/phont"
+    VERBATIM
+)
+foreach(_phont IN LISTS AQTK2_PHONTS)
+    aqtk_stage_dll(
+        "${AQTK_ROOT}/tk2/aqtk2-win/phont/${_phont}.phont"
+        "phont/${_phont}.phont")
+endforeach()
 aqtk_stage_dll("${AQTK10_VENDOR_DLL}" "AquesTalk10.dll")
 
 add_executable(aqtk_demo demo/main.cpp)
