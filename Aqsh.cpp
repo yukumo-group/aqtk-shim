@@ -115,8 +115,10 @@ AQSH_API int AqShim_Synthesize(
         apply_key(AquesTalk1_SetDevKey, param->DevKey);
         apply_key(AquesTalk1_SetUsrKey, param->UserKey);
         wav = AquesTalk1_Synthe_Utf8(text, param->speed, &size);
+        break;
     case AQ_VER_2:
         wav = AquesTalk2_Synthe_Utf8(text, param->speed, &size, nullptr);
+        break;
     case AQ_VER_10: {
         apply_key(AquesTalk10_SetDevKey, param->DevKey);
         apply_key(AquesTalk10_SetUsrKey, param->UserKey);
@@ -129,6 +131,7 @@ AQSH_API int AqShim_Synthesize(
         voice.lmd = param->lmd;
         voice.fsc = param->fsc;
         wav = AquesTalk10_Synthe_Utf8(&voice, text, &size);
+        break;
     }
     default:
         return AQSH_ERR_VERSION;
