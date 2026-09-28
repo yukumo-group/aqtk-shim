@@ -37,11 +37,24 @@ enum Aq1Preset {
     AQ1_PRESET_COUNT
 };
 
+// AquesTalk10 gVoice_* presets. 0 uses base/speed/volume/pitch/accent/lmd/fsc.
+enum Aq10Preset {
+    AQ10_CUSTOM = 0,
+    AQ10_F1,
+    AQ10_F2,
+    AQ10_F3,
+    AQ10_M1,
+    AQ10_M2,
+    AQ10_R1,
+    AQ10_R2,
+    AQ10_PRESET_COUNT
+};
+
 struct AqSynthParam {
     AqVersion version;
 
     // --- Aqtk1 + shared params ---
-    // aq1: Aq1Preset; aq10: presets; aq2: phont path / name;
+    // aq1: Aq1Preset; aq10: Aq10Preset; aq2: phont path / name;
     int preset;
     int speed;
 
