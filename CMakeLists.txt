@@ -6,6 +6,16 @@ if(NOT MSVC)
     message(FATAL_ERROR "Aqsh embeds the MSVC AquesTalk import libraries and must be built with MSVC.")
 endif()
 
+# Release is size-optimized and emits no debug symbols.
+set(_aqtk_release_compile "/O1 /Ob1 /GF /Gy /Gw /DNDEBUG")
+set(_aqtk_release_link "/INCREMENTAL:NO /DEBUG:NONE /OPT:REF /OPT:ICF")
+set(CMAKE_CXX_FLAGS_RELEASE "${_aqtk_release_compile}" CACHE STRING "" FORCE)
+set(CMAKE_CXX_FLAGS_MINSIZEREL "${_aqtk_release_compile}" CACHE STRING "" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${_aqtk_release_link}" CACHE STRING "" FORCE)
+set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${_aqtk_release_link}" CACHE STRING "" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "${_aqtk_release_link}" CACHE STRING "" FORCE)
+set(CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL "${_aqtk_release_link}" CACHE STRING "" FORCE)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

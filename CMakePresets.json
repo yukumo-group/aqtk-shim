@@ -34,6 +34,20 @@
       "configuration": "Release"
     },
     {
+      "name": "x64-release-dlls",
+      "displayName": "Release DLLs (x64)",
+      "configurePreset": "x64",
+      "configuration": "Release",
+      "targets": ["Aqsh"]
+    },
+    {
+      "name": "x64-release-demo",
+      "displayName": "Release DLLs + demo (x64)",
+      "configurePreset": "x64",
+      "configuration": "Release",
+      "targets": ["aqtk_demo"]
+    },
+    {
       "name": "x86-debug",
       "configurePreset": "x86",
       "configuration": "Debug"
@@ -42,6 +56,20 @@
       "name": "x86-release",
       "configurePreset": "x86",
       "configuration": "Release"
+    },
+    {
+      "name": "x86-release-dlls",
+      "displayName": "Release DLLs (x86)",
+      "configurePreset": "x86",
+      "configuration": "Release",
+      "targets": ["Aqsh"]
+    },
+    {
+      "name": "x86-release-demo",
+      "displayName": "Release DLLs + demo (x86)",
+      "configurePreset": "x86",
+      "configuration": "Release",
+      "targets": ["aqtk_demo"]
     },
     {
       "name": "demo",
