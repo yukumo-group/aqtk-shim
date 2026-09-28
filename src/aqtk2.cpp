@@ -15,6 +15,8 @@
 namespace {
     // Same order as Aq2Preset. Staged in phont/ next to Aqsh.dll.
     constexpr const wchar_t* kPhontNames[] = {
+        L"aq_yukkuri.phont",
+        L"aq_defo1.phont",
         L"aq_f1c.phont",
         L"aq_f3a.phont",
         L"aq_huskey.phont",
@@ -24,7 +26,7 @@ namespace {
         L"aq_rb3.phont",
         L"aq_rm.phont",
         L"aq_robo.phont",
-        L"aq_yukkuri.phont",
+        L"aq_teto1.phont",
         L"ar_f4.phont",
         L"ar_m5.phont",
         L"ar_mf2.phont",

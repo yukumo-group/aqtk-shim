@@ -37,10 +37,12 @@ enum Aq1Preset {
     AQ1_PRESET_COUNT
 };
 
-// AquesTalk2 phont files staged in phont/ next to Aqsh.dll. 0 is aq_f1c.
+// AquesTalk2 phont files staged in phont/ next to Aqsh.dll. 0 is aq_yukkuri.
 // A non-empty phont path overrides this preset.
 enum Aq2Preset {
-    AQ2_AQ_F1C = 0,
+    AQ2_AQ_YUKKURI = 0,
+    AQ2_AQ_DEFO1,
+    AQ2_AQ_F1C,
     AQ2_AQ_F3A,
     AQ2_AQ_HUSKEY,
     AQ2_AQ_M4B,
@@ -49,7 +51,7 @@ enum Aq2Preset {
     AQ2_AQ_RB3,
     AQ2_AQ_RM,
     AQ2_AQ_ROBO,
-    AQ2_AQ_YUKKURI,
+    AQ2_AQ_TETO1,
     AQ2_AR_F4,
     AQ2_AR_M5,
     AQ2_AR_MF2,

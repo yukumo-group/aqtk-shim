@@ -37,8 +37,8 @@ set(AQTK2_VENDOR_LIB "${AQTK_ROOT}/tk2/aqtk2-win/${AQTK_LIBDIR}/AquesTalk2.lib")
 set(AQTK2_VENDOR_DLL "${AQTK_ROOT}/tk2/aqtk2-win/${AQTK_LIBDIR}/AquesTalk2.dll")
 # Same order as Aq2Preset.
 set(AQTK2_PHONTS
-    aq_f1c aq_f3a aq_huskey aq_m4b aq_mf1
-    aq_rb2 aq_rb3 aq_rm aq_robo aq_yukkuri
+    aq_defo1 aq_f1c aq_f3a aq_huskey aq_m4b aq_mf1
+    aq_rb2 aq_rb3 aq_rm aq_robo aq_teto1 aq_yukkuri
     ar_f4 ar_m5 ar_mf2 ar_rm3)
 set(AQTK10_VENDOR_DLL "${AQTK_ROOT}/tk10/aqtk10_win/${AQTK_LIBDIR}/AquesTalk.dll")
 
