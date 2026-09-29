@@ -5,6 +5,10 @@
 #include "synth_util.h"
 #include "wav_track.h"
 
+#ifdef __ANDROID__
+#include "jni_bridge.h"
+#endif
+
 #include <array>
 #include <mutex>
 #include <string>
@@ -15,10 +19,16 @@ namespace {
 
     struct VoiceLib {
         ModuleHandle module = nullptr;
-        SyntheUtf8Fn synthe = nullptr;
         WavFreeFn free_wave = nullptr;
+#ifdef __ANDROID__
+        void* synthe = nullptr;
+        void* set_dev_key = nullptr;
+        void* set_usr_key = nullptr;
+#else
+        SyntheUtf8Fn synthe = nullptr;
         SetKeyFn set_dev_key = nullptr;
         SetKeyFn set_usr_key = nullptr;
+#endif
     };
 
     struct Registry {
@@ -45,7 +55,7 @@ namespace {
 #ifdef _WIN32
         return dir / (std::string("AquesTalk1_") + voice + ".dll");
 #else
-        // Same staged names as cmake/platform/macos.cmake and linux.cmake.
+        // Same staged names as cmake/platform/macos.cmake, linux.cmake, and android.cmake.
         const char* ext =
 #ifdef __APPLE__
             ".dylib";
@@ -57,6 +67,26 @@ namespace {
     }
 
     bool bind_voice(ModuleHandle module, VoiceLib* voice) {
+#ifdef __ANDROID__
+        // AquesTalk10 exports this C symbol and the same SONAME. Reject that
+        // mapping so a failed FORCE_LOAD cannot run the wrong engine.
+        if (module_symbol<void*>(module, "AquesTalk_Synthe_Utf8")) {
+            module_close(module);
+            return false;
+        }
+        const auto synthe = module_symbol<void*>(module, "Java_aquestalk_AquesTalk_syntheWav");
+        const auto set_dev_key = module_symbol<void*>(module, "Java_aquestalk_AquesTalk_setDevKey");
+        const auto set_usr_key = module_symbol<void*>(module, "Java_aquestalk_AquesTalk_setUsrKey");
+        if (!synthe || !set_dev_key || !set_usr_key) {
+            module_close(module);
+            return false;
+        }
+        voice->module = module;
+        voice->synthe = synthe;
+        voice->free_wave = jni_free_wav;
+        voice->set_dev_key = set_dev_key;
+        voice->set_usr_key = set_usr_key;
+#else
         const auto synthe = module_symbol<SyntheUtf8Fn>(module, "AquesTalk_Synthe_Utf8");
         const auto free_wave = module_symbol<WavFreeFn>(module, "AquesTalk_FreeWave");
         const auto set_dev_key = module_symbol<SetKeyFn>(module, "AquesTalk_SetDevKey");
@@ -70,6 +100,7 @@ namespace {
         voice->free_wave = free_wave;
         voice->set_dev_key = set_dev_key;
         voice->set_usr_key = set_usr_key;
+#endif
         return true;
     }
 
@@ -96,10 +127,16 @@ namespace {
 }
 
 unsigned char* aqtk1_synthe_utf8(const AqSynthParam* param, const char* text, int* size) {
+#ifdef __ANDROID__
+    void* synthe = nullptr;
+    void* set_dev_key = nullptr;
+    void* set_usr_key = nullptr;
+#else
     SyntheUtf8Fn synthe = nullptr;
-    WavFreeFn free_wave = nullptr;
     SetKeyFn set_dev_key = nullptr;
     SetKeyFn set_usr_key = nullptr;
+#endif
+    WavFreeFn free_wave = nullptr;
     {
         auto& reg = registry();
         std::lock_guard lock(reg.mu);
@@ -113,9 +150,15 @@ unsigned char* aqtk1_synthe_utf8(const AqSynthParam* param, const char* text, in
         set_usr_key = voice->set_usr_key;
     }
 
+#ifdef __ANDROID__
+    jni_set_key(set_dev_key, param->DevKey);
+    jni_set_key(set_usr_key, param->UserKey);
+    unsigned char* wav = jni_synthe_wav(synthe, text, param->speed, nullptr, 0, size);
+#else
     apply_key(set_dev_key, param->DevKey);
     apply_key(set_usr_key, param->UserKey);
     unsigned char* wav = synthe(text, param->speed, size);
+#endif
     if (wav) {
         wav_track(wav, free_wave);
     }

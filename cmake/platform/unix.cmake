@@ -1,9 +1,15 @@
 find_package(Threads REQUIRED)
 
 function(aqtk_configure_aqsh target)
+    # Android AquesTalk2 exports only a JNI entry, so it is opened by path.
+    set(_vendor "${AQTK10_LIB}")
+    if(AQTK_DLOPEN_AQTK2)
+        target_compile_definitions(${target} PRIVATE "AQTK2_DLOPEN=\"${AQTK_DLOPEN_AQTK2}\"")
+    else()
+        list(INSERT _vendor 0 "${AQTK2_LIB}")
+    endif()
     target_link_libraries(${target} PRIVATE
-        "${AQTK2_LIB}"
-        "${AQTK10_LIB}"
+        ${_vendor}
         Threads::Threads
         ${CMAKE_DL_LIBS}
     )
@@ -18,6 +24,10 @@ function(aqtk_configure_aqsh target)
     )
     if(APPLE)
         set_target_properties(${target} PROPERTIES MACOSX_RPATH ON)
+    elseif(ANDROID)
+        # Android's CMake platform clears the RPATH driver flag, so BUILD_RPATH
+        # above does not reach the linker.
+        target_link_options(${target} PRIVATE "-Wl,-rpath,${AQTK_RPATH}")
     endif()
 
     foreach(_src _name IN ZIP_LISTS AQTK1_SOURCES AQTK1_STAGED)
@@ -34,4 +44,7 @@ function(aqtk_configure_demo target)
         INSTALL_RPATH "${AQTK_RPATH}"
         BUILD_WITH_INSTALL_RPATH ON
     )
+    if(ANDROID)
+        target_link_options(${target} PRIVATE "-Wl,-rpath,${AQTK_RPATH}")
+    endif()
 endfunction()

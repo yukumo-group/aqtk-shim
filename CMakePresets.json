@@ -78,6 +78,61 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "android",
+      "hidden": true,
+      "generator": "Ninja",
+      "toolchainFile": "${sourceDir}/cmake/android.toolchain.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "android-arm64",
+      "displayName": "Android arm64-v8a",
+      "inherits": "android",
+      "binaryDir": "${sourceDir}/build/android-arm64",
+      "cacheVariables": {
+        "ANDROID_ABI": "arm64-v8a"
+      }
+    },
+    {
+      "name": "android-armv7",
+      "displayName": "Android armeabi-v7a",
+      "inherits": "android",
+      "binaryDir": "${sourceDir}/build/android-armv7",
+      "cacheVariables": {
+        "ANDROID_ABI": "armeabi-v7a"
+      }
+    },
+    {
+      "name": "android-x86_64",
+      "displayName": "Android x86_64",
+      "inherits": "android",
+      "binaryDir": "${sourceDir}/build/android-x86_64",
+      "cacheVariables": {
+        "ANDROID_ABI": "x86_64"
+      }
+    },
+    {
+      "name": "android-x86",
+      "displayName": "Android x86",
+      "inherits": "android",
+      "binaryDir": "${sourceDir}/build/android-x86",
+      "cacheVariables": {
+        "ANDROID_ABI": "x86"
+      }
+    },
+    {
+      "name": "android-riscv64",
+      "displayName": "Android riscv64",
+      "inherits": "android",
+      "binaryDir": "${sourceDir}/build/android-riscv64",
+      "cacheVariables": {
+        "ANDROID_ABI": "riscv64",
+        "ANDROID_PLATFORM": "android-36"
+      }
     }
   ],
   "buildPresets": [
@@ -158,6 +213,36 @@
       "name": "linux-debug-demo",
       "displayName": "Debug library + demo (Linux)",
       "configurePreset": "linux-debug",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "android-arm64-release",
+      "displayName": "Release library + demo (Android arm64)",
+      "configurePreset": "android-arm64",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "android-armv7-release",
+      "displayName": "Release library + demo (Android armv7)",
+      "configurePreset": "android-armv7",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "android-x86_64-release",
+      "displayName": "Release library + demo (Android x86_64)",
+      "configurePreset": "android-x86_64",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "android-x86-release",
+      "displayName": "Release library + demo (Android x86)",
+      "configurePreset": "android-x86",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "android-riscv64-release",
+      "displayName": "Release library + demo (Android riscv64)",
+      "configurePreset": "android-riscv64",
       "targets": ["aqtk_demo"]
     }
   ]

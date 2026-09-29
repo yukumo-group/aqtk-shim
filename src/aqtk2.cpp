@@ -5,6 +5,11 @@
 #include "synth_util.h"
 #include "wav_track.h"
 
+#ifdef AQTK2_DLOPEN
+#include "jni_bridge.h"
+#include <mutex>
+#endif
+
 #include <filesystem>
 #include <fstream>
 #include <vector>
@@ -60,8 +65,31 @@ namespace {
         in.read(reinterpret_cast<char*>(out->data()), n);
         return static_cast<std::streamsize>(out->size()) == in.gcount();
     }
+
+#ifdef AQTK2_DLOPEN
+    void* aq2_synthe_fn() {
+        static void* synthe = nullptr;
+        static std::once_flag once;
+        std::call_once(once, [] {
+            const auto dir = module_dir();
+            if (dir.empty()) {
+                return;
+            }
+            const ModuleHandle module = module_open(dir / AQTK2_DLOPEN);
+            if (!module) {
+                return;
+            }
+            synthe = module_symbol<void*>(module, "Java_aquestalk2_AquesTalk2_syntheWav");
+            if (!synthe) {
+                module_close(module);
+            }
+        });
+        return synthe;
+    }
+#endif
 }
 
+#ifndef AQTK2_DLOPEN
 extern "C" {
 
 AQTK_IMPORT unsigned char* AQTK_CALL AquesTalk2_Synthe_Utf8(
@@ -70,6 +98,7 @@ AQTK_IMPORT unsigned char* AQTK_CALL AquesTalk2_Synthe_Utf8(
 AQTK_IMPORT void AQTK_CALL AquesTalk2_FreeWave(unsigned char* wav);
 
 }
+#endif
 
 unsigned char* aqtk2_synthe_utf8(const AqSynthParam* param, const char* text, int* size) {
     std::vector<unsigned char> phont;
@@ -78,9 +107,21 @@ unsigned char* aqtk2_synthe_utf8(const AqSynthParam* param, const char* text, in
         return fail_wav(size);
     }
 
+#ifdef AQTK2_DLOPEN
+    void* synthe = aq2_synthe_fn();
+    if (!synthe) {
+        return fail_wav(size);
+    }
+    unsigned char* wav = jni_synthe_wav(
+        synthe, text, param->speed, phont.data(), static_cast<int>(phont.size()), size);
+    if (wav) {
+        wav_track(wav, jni_free_wav);
+    }
+#else
     unsigned char* wav = AquesTalk2_Synthe_Utf8(text, param->speed, size, phont.data());
     if (wav) {
         wav_track(wav, AquesTalk2_FreeWave);
     }
+#endif
     return wav;
 }

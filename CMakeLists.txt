@@ -13,12 +13,14 @@ include(cmake/stage.cmake)
 
 if(WIN32)
     include(cmake/platform/windows.cmake)
+elseif(ANDROID)
+    include(cmake/platform/android.cmake)
 elseif(APPLE)
     include(cmake/platform/macos.cmake)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include(cmake/platform/linux.cmake)
 else()
-    message(FATAL_ERROR "aqtk-shim builds on Windows (MSVC), macOS, and Linux.")
+    message(FATAL_ERROR "aqtk-shim builds on Windows (MSVC), macOS, Linux, and Android.")
 endif()
 
 add_library(Aqsh SHARED
@@ -28,6 +30,7 @@ add_library(Aqsh SHARED
     src/aqtk10.cpp
     src/wav_track.cpp
     src/module_dir.cpp
+    ${AQTK_EXTRA_SOURCES}
 )
 target_compile_definitions(Aqsh PRIVATE AQSWRAPPER_EXPORTS)
 target_include_directories(Aqsh PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")

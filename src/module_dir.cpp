@@ -2,6 +2,10 @@
 
 #include <string>
 
+#ifdef __ANDROID__
+#include <android/dlext.h>
+#endif
+
 std::filesystem::path module_dir() {
 #ifdef _WIN32
     HMODULE self = nullptr;
@@ -60,6 +64,12 @@ ModuleHandle module_open(const std::filesystem::path& path) {
         path.c_str(),
         nullptr,
         LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32);
+#elif defined(__ANDROID__)
+    // AquesTalk1 and AquesTalk10 share SONAME libAquesTalk.so. FORCE_LOAD maps
+    // this file even when that name is already loaded for AquesTalk10.
+    android_dlextinfo info{};
+    info.flags = ANDROID_DLEXT_FORCE_LOAD;
+    return android_dlopen_ext(path.c_str(), RTLD_NOW | RTLD_LOCAL, &info);
 #else
     // RTLD_LOCAL: every AquesTalk1 voice exports AquesTalk_*, as does AquesTalk10.
     return dlopen(path.c_str(), RTLD_NOW | RTLD_LOCAL);
