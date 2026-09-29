@@ -20,6 +20,36 @@
         "strategy": "set"
       },
       "binaryDir": "${sourceDir}/build/x86"
+    },
+    {
+      "name": "macos",
+      "displayName": "macOS arm64",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/macos",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_OSX_ARCHITECTURES": "arm64"
+      }
+    },
+    {
+      "name": "macos-debug",
+      "displayName": "macOS arm64 Debug",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/macos-debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_OSX_ARCHITECTURES": "arm64"
+      }
     }
   ],
   "buildPresets": [
@@ -76,6 +106,18 @@
       "displayName": "Yukkuri demo (x64 Debug)",
       "configurePreset": "x64",
       "configuration": "Debug",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "macos-release",
+      "displayName": "Release dylib + demo (macOS)",
+      "configurePreset": "macos",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "macos-debug-demo",
+      "displayName": "Debug dylib + demo (macOS)",
+      "configurePreset": "macos-debug",
       "targets": ["aqtk_demo"]
     }
   ]

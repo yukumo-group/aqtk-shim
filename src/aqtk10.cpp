@@ -1,6 +1,8 @@
 #include "aqtk10.h"
 
 #include "Aqsh.h"
+#include "synth_util.h"
+#include "wav_track.h"
 
 namespace {
     struct Aq10Voice {
@@ -12,12 +14,6 @@ namespace {
         int lmd;
         int fsc;
     };
-
-    void apply_key(int (__stdcall* set_key)(const char*), const char* key) {
-        if (key && key[0]) {
-            set_key(key);
-        }
-    }
 
     constexpr Aq10Voice kPresets[] = {
         {0, 100, 100, 100, 100, 100, 100}, // F1
@@ -49,30 +45,44 @@ namespace {
     }
 }
 
+// Windows imports AquesTalk10_* by ordinal. macOS links libAquesTalk10.dylib,
+// which exports the same AquesTalk_* names as the AquesTalk1 voices.
 extern "C" {
 
-__declspec(dllimport) unsigned char* __stdcall AquesTalk10_Synthe_Utf8(
+#ifdef _WIN32
+__declspec(dllimport) unsigned char* AQTK_CALL AquesTalk10_Synthe_Utf8(
     const Aq10Voice* voice, const char* koe, int* size);
-__declspec(dllimport) void __stdcall AquesTalk10_FreeWave(unsigned char* wav);
-__declspec(dllimport) int __stdcall AquesTalk10_SetDevKey(const char* key);
-__declspec(dllimport) int __stdcall AquesTalk10_SetUsrKey(const char* key);
+__declspec(dllimport) void AQTK_CALL AquesTalk10_FreeWave(unsigned char* wav);
+__declspec(dllimport) int AQTK_CALL AquesTalk10_SetDevKey(const char* key);
+__declspec(dllimport) int AQTK_CALL AquesTalk10_SetUsrKey(const char* key);
+#define AQ10_SYNTHE AquesTalk10_Synthe_Utf8
+#define AQ10_FREE AquesTalk10_FreeWave
+#define AQ10_DEV_KEY AquesTalk10_SetDevKey
+#define AQ10_USR_KEY AquesTalk10_SetUsrKey
+#else
+unsigned char* AquesTalk_Synthe_Utf8(const Aq10Voice* voice, const char* koe, int* size);
+void AquesTalk_FreeWave(unsigned char* wav);
+int AquesTalk_SetDevKey(const char* key);
+int AquesTalk_SetUsrKey(const char* key);
+#define AQ10_SYNTHE AquesTalk_Synthe_Utf8
+#define AQ10_FREE AquesTalk_FreeWave
+#define AQ10_DEV_KEY AquesTalk_SetDevKey
+#define AQ10_USR_KEY AquesTalk_SetUsrKey
+#endif
 
 }
 
 unsigned char* aqtk10_synthe_utf8(const AqSynthParam* param, const char* text, int* size) {
     Aq10Voice voice{};
     if (!voice_from_param(param, &voice)) {
-        if (size) {
-            *size = 0;
-        }
-        return nullptr;
+        return fail_wav(size);
     }
 
-    apply_key(AquesTalk10_SetDevKey, param->DevKey);
-    apply_key(AquesTalk10_SetUsrKey, param->UserKey);
-    return AquesTalk10_Synthe_Utf8(&voice, text, size);
-}
-
-void aqtk10_free(unsigned char* wav) {
-    AquesTalk10_FreeWave(wav);
+    apply_key(AQ10_DEV_KEY, param->DevKey);
+    apply_key(AQ10_USR_KEY, param->UserKey);
+    unsigned char* wav = AQ10_SYNTHE(&voice, text, size);
+    if (wav) {
+        wav_track(wav, AQ10_FREE);
+    }
+    return wav;
 }

@@ -16,14 +16,12 @@ namespace {
         AQSH_ERR_SYNTH = -3
     };
 
-    int finish_synth(unsigned char* wav, const int size, const WavFreeFn free_fn,
-                     unsigned char** out_wav_data, int* out_wav_size) {
+    int finish_synth(unsigned char* wav, int size, unsigned char** out_wav_data, int* out_wav_size) {
         if (!wav) {
             *out_wav_data = nullptr;
             *out_wav_size = 0;
             return size != 0 ? size : AQSH_ERR_SYNTH;
         }
-        wav_track(wav, free_fn);
         *out_wav_data = wav;
         *out_wav_size = size;
         return AQSH_OK;
@@ -51,24 +49,20 @@ AQSH_API int AqShim_Synthesize(
 
     int size = 0;
     unsigned char* wav = nullptr;
-    WavFreeFn free_fn = nullptr;
     switch (param->version) {
     case AQ_VER_1:
         wav = aqtk1_synthe_utf8(param, text, &size);
-        free_fn = aqtk1_free;
         break;
     case AQ_VER_2:
         wav = aqtk2_synthe_utf8(param, text, &size);
-        free_fn = aqtk2_free;
         break;
     case AQ_VER_10:
         wav = aqtk10_synthe_utf8(param, text, &size);
-        free_fn = aqtk10_free;
         break;
     default:
         return AQSH_ERR_VERSION;
     }
-    return finish_synth(wav, size, free_fn, out_wav_data, out_wav_size);
+    return finish_synth(wav, size, out_wav_data, out_wav_size);
 }
 
 AQSH_API void AqShim_FreeWav(unsigned char* wav_data) {

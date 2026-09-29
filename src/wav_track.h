@@ -1,6 +1,8 @@
 #pragma once
 
-using WavFreeFn = void (*)(unsigned char* wav);
+#include "synth_util.h"
+
+using WavFreeFn = void (AQTK_CALL*)(unsigned char* wav);
 
 void wav_track(unsigned char* wav, WavFreeFn free_fn);
 void wav_release(unsigned char* wav);
