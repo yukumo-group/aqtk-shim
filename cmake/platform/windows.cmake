@@ -37,7 +37,7 @@ aqtk_require_files(
     "${AQTK2_VENDOR_LIB}"
     "${AQTK2_VENDOR_DLL}"
     "${AQTK10_VENDOR_DLL}")
-aqtk_collect_phonts(REQUIRED)
+aqtk_collect_phonts()
 
 # stdcall argument bytes
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)

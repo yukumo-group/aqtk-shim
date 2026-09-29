@@ -9,7 +9,10 @@
         "value": "x64",
         "strategy": "set"
       },
-      "binaryDir": "${sourceDir}/build/x64"
+      "binaryDir": "${sourceDir}/build/x64",
+      "cacheVariables": {
+        "AQTK_ARCH": "win64"
+      }
     },
     {
       "name": "x86",
@@ -19,7 +22,10 @@
         "value": "Win32",
         "strategy": "set"
       },
-      "binaryDir": "${sourceDir}/build/x86"
+      "binaryDir": "${sourceDir}/build/x86",
+      "cacheVariables": {
+        "AQTK_ARCH": "win32"
+      }
     },
     {
       "name": "macos",
@@ -33,7 +39,8 @@
       },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_OSX_ARCHITECTURES": "arm64"
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+        "AQTK_ARCH": "macos"
       }
     },
     {
@@ -48,7 +55,8 @@
       },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_OSX_ARCHITECTURES": "arm64"
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+        "AQTK_ARCH": "macos"
       }
     },
     {
@@ -62,7 +70,27 @@
         "rhs": "Linux"
       },
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_BUILD_TYPE": "Release",
+        "AQTK_ARCH": "linux64"
+      }
+    },
+    {
+      "name": "linux32",
+      "displayName": "Linux x86",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/linux32",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_FLAGS": "-m32",
+        "CMAKE_CXX_FLAGS": "-m32",
+        "CMAKE_EXE_LINKER_FLAGS": "-m32",
+        "CMAKE_SHARED_LINKER_FLAGS": "-m32",
+        "AQTK_ARCH": "linux32"
       }
     },
     {
@@ -76,7 +104,8 @@
         "rhs": "Linux"
       },
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "AQTK_ARCH": "linux64"
       }
     }
   ],
@@ -152,6 +181,12 @@
       "name": "linux-release",
       "displayName": "Release library + demo (Linux)",
       "configurePreset": "linux",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "linux32-release",
+      "displayName": "Release library + demo (Linux x86)",
+      "configurePreset": "linux32",
       "targets": ["aqtk_demo"]
     },
     {
