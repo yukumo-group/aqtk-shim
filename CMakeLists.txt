@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(AQTK_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
 
+# OFF skips copying phont/ next to Aqsh. The parent project passes paths itself.
+option(AQTK_STAGE_PHONTS "Copy the AquesTalk2 phont directory next to Aqsh" ON)
+
 include(cmake/voices.cmake)
 include(cmake/sdk.cmake)
 include(cmake/stage.cmake)

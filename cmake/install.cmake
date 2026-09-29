@@ -7,6 +7,8 @@ endif()
 
 message(STATUS "aqtk-shim stages Release into ${CMAKE_INSTALL_PREFIX}/aq{1,2,10}/${AQTK_ARCH}")
 
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/Aqsh.h" DESTINATION ".")
+
 foreach(_ver IN ITEMS aq1 aq2 aq10)
     set(_dest "${_ver}/${AQTK_ARCH}")
     install(TARGETS Aqsh
@@ -14,7 +16,6 @@ foreach(_ver IN ITEMS aq1 aq2 aq10)
         LIBRARY DESTINATION "${_dest}"
         ARCHIVE DESTINATION "${_dest}"
     )
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/Aqsh.h" DESTINATION "${_dest}")
 endforeach()
 
 if(WIN32)
@@ -43,7 +44,9 @@ else()
         RENAME "${AQTK10_STAGED}")
 endif()
 
-foreach(_phont IN LISTS AQTK2_PHONTS_PRESENT)
-    install(FILES "${AQTK2_PHONTDIR}/${_phont}.phont"
-        DESTINATION "aq2/${AQTK_ARCH}/phont")
-endforeach()
+if(AQTK_STAGE_PHONTS)
+    foreach(_phont IN LISTS AQTK2_PHONTS_PRESENT)
+        install(FILES "${AQTK2_PHONTDIR}/${_phont}.phont"
+            DESTINATION "aq2/${AQTK_ARCH}/phont")
+    endforeach()
+endif()
