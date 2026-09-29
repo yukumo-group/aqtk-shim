@@ -64,16 +64,10 @@ namespace {
 
 extern "C" {
 
-#ifdef _WIN32
-__declspec(dllimport)
-#endif
-unsigned char* AQTK_CALL AquesTalk2_Synthe_Utf8(
+AQTK_IMPORT unsigned char* AQTK_CALL AquesTalk2_Synthe_Utf8(
     const char* koe, int speed, int* size, void* phont);
 
-#ifdef _WIN32
-__declspec(dllimport)
-#endif
-void AQTK_CALL AquesTalk2_FreeWave(unsigned char* wav);
+AQTK_IMPORT void AQTK_CALL AquesTalk2_FreeWave(unsigned char* wav);
 
 }
 

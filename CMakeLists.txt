@@ -15,8 +15,10 @@ if(WIN32)
     include(cmake/platform/windows.cmake)
 elseif(APPLE)
     include(cmake/platform/macos.cmake)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    include(cmake/platform/linux.cmake)
 else()
-    message(FATAL_ERROR "aqtk-shim builds on Windows (MSVC) and macOS.")
+    message(FATAL_ERROR "aqtk-shim builds on Windows (MSVC), macOS, and Linux.")
 endif()
 
 add_library(Aqsh SHARED

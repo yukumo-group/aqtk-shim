@@ -45,25 +45,26 @@ namespace {
     }
 }
 
-// Windows imports AquesTalk10_* by ordinal. macOS links libAquesTalk10.dylib,
+// Windows imports AquesTalk10_* by ordinal. macOS and Linux link AquesTalk10,
 // which exports the same AquesTalk_* names as the AquesTalk1 voices.
 extern "C" {
 
 #ifdef _WIN32
-__declspec(dllimport) unsigned char* AQTK_CALL AquesTalk10_Synthe_Utf8(
+AQTK_IMPORT unsigned char* AQTK_CALL AquesTalk10_Synthe_Utf8(
     const Aq10Voice* voice, const char* koe, int* size);
-__declspec(dllimport) void AQTK_CALL AquesTalk10_FreeWave(unsigned char* wav);
-__declspec(dllimport) int AQTK_CALL AquesTalk10_SetDevKey(const char* key);
-__declspec(dllimport) int AQTK_CALL AquesTalk10_SetUsrKey(const char* key);
+AQTK_IMPORT void AQTK_CALL AquesTalk10_FreeWave(unsigned char* wav);
+AQTK_IMPORT int AQTK_CALL AquesTalk10_SetDevKey(const char* key);
+AQTK_IMPORT int AQTK_CALL AquesTalk10_SetUsrKey(const char* key);
 #define AQ10_SYNTHE AquesTalk10_Synthe_Utf8
 #define AQ10_FREE AquesTalk10_FreeWave
 #define AQ10_DEV_KEY AquesTalk10_SetDevKey
 #define AQ10_USR_KEY AquesTalk10_SetUsrKey
 #else
-unsigned char* AquesTalk_Synthe_Utf8(const Aq10Voice* voice, const char* koe, int* size);
-void AquesTalk_FreeWave(unsigned char* wav);
-int AquesTalk_SetDevKey(const char* key);
-int AquesTalk_SetUsrKey(const char* key);
+AQTK_IMPORT unsigned char* AQTK_CALL AquesTalk_Synthe_Utf8(
+    const Aq10Voice* voice, const char* koe, int* size);
+AQTK_IMPORT void AQTK_CALL AquesTalk_FreeWave(unsigned char* wav);
+AQTK_IMPORT int AQTK_CALL AquesTalk_SetDevKey(const char* key);
+AQTK_IMPORT int AQTK_CALL AquesTalk_SetUsrKey(const char* key);
 #define AQ10_SYNTHE AquesTalk_Synthe_Utf8
 #define AQ10_FREE AquesTalk_FreeWave
 #define AQ10_DEV_KEY AquesTalk_SetDevKey

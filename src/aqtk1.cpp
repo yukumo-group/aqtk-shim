@@ -43,11 +43,17 @@ namespace {
             return {};
         }
 #ifdef _WIN32
-        const std::string name = std::string("AquesTalk1_") + voice + ".dll";
+        return dir / (std::string("AquesTalk1_") + voice + ".dll");
 #else
-        const std::string name = std::string("libAquesTalk1-") + voice + ".dylib";
+        // Same staged names as cmake/platform/macos.cmake and linux.cmake.
+        const char* ext =
+#ifdef __APPLE__
+            ".dylib";
+#else
+            ".so";
 #endif
-        return dir / name;
+        return dir / (std::string("libAquesTalk1-") + voice + ext);
+#endif
     }
 
     bool bind_voice(ModuleHandle module, VoiceLib* voice) {

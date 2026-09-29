@@ -2,8 +2,10 @@
 
 #ifdef _WIN32
 #define AQTK_CALL __stdcall
+#define AQTK_IMPORT __declspec(dllimport)
 #else
 #define AQTK_CALL
+#define AQTK_IMPORT __attribute__((visibility("default")))
 #endif
 
 template <typename SetKeyFn>

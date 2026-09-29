@@ -9,9 +9,12 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
-#else
+#elif defined(__APPLE__)
 #include <cstdint>
 #include <mach-o/dyld.h>
+#else
+#include <limits.h>
+#include <unistd.h>
 #endif
 
 namespace {
@@ -45,13 +48,21 @@ namespace {
         }
         path.resize(slash + 1);
         return std::filesystem::path(path);
-#else
+#elif defined(__APPLE__)
         std::string path(1024, '\0');
         uint32_t size = static_cast<uint32_t>(path.size());
         while (_NSGetExecutablePath(path.data(), &size) != 0) {
             path.resize(size);
         }
         return std::filesystem::weakly_canonical(path.c_str()).parent_path();
+#else
+        std::string path(PATH_MAX, '\0');
+        const ssize_t n = ::readlink("/proc/self/exe", path.data(), path.size() - 1);
+        if (n <= 0) {
+            return {};
+        }
+        path.resize(static_cast<size_t>(n));
+        return std::filesystem::path(path).parent_path();
 #endif
     }
 

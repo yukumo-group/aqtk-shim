@@ -50,6 +50,34 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_OSX_ARCHITECTURES": "arm64"
       }
+    },
+    {
+      "name": "linux",
+      "displayName": "Linux x64",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/linux",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "linux-debug",
+      "displayName": "Linux x64 Debug",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/linux-debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     }
   ],
   "buildPresets": [
@@ -118,6 +146,18 @@
       "name": "macos-debug-demo",
       "displayName": "Debug dylib + demo (macOS)",
       "configurePreset": "macos-debug",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Release library + demo (Linux)",
+      "configurePreset": "linux",
+      "targets": ["aqtk_demo"]
+    },
+    {
+      "name": "linux-debug-demo",
+      "displayName": "Debug library + demo (Linux)",
+      "configurePreset": "linux-debug",
       "targets": ["aqtk_demo"]
     }
   ]
