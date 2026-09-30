@@ -2,7 +2,15 @@
 
 AquesTalk 1、2、10 的兼容层。一套 C 接口 `Aqsh`，按所选引擎加载对应的库。
 
-[English](README.md) · **<u>中文</u>**
+[English](README.md) · **<u>中文</u>** · [日本語](README.ja.md)
+
+## 实现状态
+
+| 引擎 | Windows | macOS | Linux | Android | iOS |
+|------|---------|-------|-------|---------|-----|
+| AquesTalk1 | ✅ | ⚠️ | ⚠️ | ❌ | ❌ |
+| AquesTalk2 | ✅ | ⚠️ | ⚠️ | ❌ | ❌ |
+| AquesTalk10 | ✅ | ⚠️ | ⚠️ | ❌ | ❌ |
 
 ## 依赖
 
