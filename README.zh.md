@@ -12,6 +12,8 @@ CMake 3.20 或更高，以及支持 C++17 的编译器。
 - macOS：仅 arm64。
 - Linux：x86_64 或 i386。32 位构建需要 multilib 工具链（`-m32`）。
 
+从[AquesTalk 官方网站](https://www.a-quest.com/download.html)下载对应平台的所有AquesTalk SDK。
+
 把 AquesTalk SDK 放在 `third-party/`。缺少必需的库时，配置会失败。缺少某个 AquesTalk2 phont 时，会跳过该文件。
 
 ```

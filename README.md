@@ -12,6 +12,8 @@ CMake 3.20 or newer, and a C++17 compiler.
 - macOS: arm64.
 - Linux: x86_64 or i386. The 32-bit build needs a multilib toolchain (`-m32`).
 
+Download the AquesTalk SDKs from the [AquesTalk official website](https://www.a-quest.com/download.html) for the platform you build.
+
 Put the AquesTalk SDKs in `third-party/`. Configure fails if a required library is missing. A missing AquesTalk2 phont is skipped.
 
 ```
