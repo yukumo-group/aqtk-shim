@@ -2,7 +2,7 @@
 
 Compatibility layer for AquesTalk 1, 2, and 10. One C API, `Aqsh`, loads the library for the selected engine.
 
-[English](README.md) · [中文](README.zh.md)
+**<u>English</u>** · [中文](README.zh.md)
 
 ## Dependencies
 

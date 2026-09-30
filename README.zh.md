@@ -2,7 +2,7 @@
 
 AquesTalk 1、2、10 的兼容层。一套 C 接口 `Aqsh`，按所选引擎加载对应的库。
 
-[English](README.md) · [中文](README.zh.md)
+[English](README.md) · **<u>中文</u>**
 
 ## 依赖
 
