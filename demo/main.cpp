@@ -109,7 +109,9 @@ int main() {
         const int rc = AqShim_Synthesize(kText, &param, &wav, &size);
         const std::filesystem::path path = dir / engine.file;
         if (rc != 0 || !wav || size <= 0 || !write_wav(path, wav, size)) {
-            std::fprintf(stderr, "%s failed rc=%d size=%d\n", engine.name, rc, size);
+            const char* message = AqShim_ErrorMessage(engine.version, rc);
+            std::fprintf(stderr, "%s failed rc=%d size=%d%s%s\n",
+                engine.name, rc, size, message ? " " : "", message ? message : "");
             ++failed;
         } else {
 #ifdef _WIN32

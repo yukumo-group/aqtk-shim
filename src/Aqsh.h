@@ -105,6 +105,10 @@ AQSH_API int AqShim_Synthesize(
     int* out_wav_size
 );
 AQSH_API void AqShim_FreeWav(unsigned char* wav_data);
+
+// Token for an aq1/aq2/aq10 error, prefixed AQ1_, AQ2_, or AQ10_.
+// See aq_error.cpp for the list of error codes.
+AQSH_API const char* AqShim_ErrorMessage(AqVersion version, int code);
 #ifdef __cplusplus
 }
 #endif
