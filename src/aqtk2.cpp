@@ -72,13 +72,20 @@ AQTK_IMPORT void AQTK_CALL AquesTalk2_FreeWave(unsigned char* wav);
 }
 
 unsigned char* aqtk2_synthe_utf8(const AqSynthParam* param, const char* text, int* size) {
-    std::vector<unsigned char> phont;
-    const auto path = phont_file(param);
-    if (path.empty() || !read_file(path, &phont)) {
-        return fail_wav(size);
+    // Kept alive through AquesTalk2_Synthe_Utf8 when the caller passed a path.
+    std::vector<unsigned char> phont_file_bytes;
+    void* phont = nullptr;
+    if (param->phont_data) {
+        phont = param->phont_data;
+    } else {
+        const auto path = phont_file(param);
+        if (path.empty() || !read_file(path, &phont_file_bytes)) {
+            return fail_wav(size);
+        }
+        phont = phont_file_bytes.data();
     }
 
-    unsigned char* wav = AquesTalk2_Synthe_Utf8(text, param->speed, size, phont.data());
+    unsigned char* wav = AquesTalk2_Synthe_Utf8(text, param->speed, size, phont);
     if (wav) {
         wav_track(wav, AquesTalk2_FreeWave);
     }

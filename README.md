@@ -64,7 +64,7 @@ build/macos/aqtk_demo
 build/linux/aqtk_demo
 ```
 
-`AQTK_STAGE_PHONTS=OFF` skips copying `phont/`. Pass phont paths yourself in that case.
+`AQTK_STAGE_PHONTS=OFF` skips copying `phont/`. Pass a phont path or in-memory phont bytes yourself in that case.
 
 Install places `Aqsh`, the renamed engine libraries, `phont/`, and `Aqsh.h` in `../third-party/<arch>` (`win64`, `win32`, `macos`, `linux64`, `linux32`):
 
@@ -107,7 +107,11 @@ struct AqSynthParam {
     int speed;
 
     // aq2 custom phont path (UTF-8). Null or empty uses preset.
+    // phont_data overrides this path.
     char *phont;
+    // aq2 phont file contents already in memory. Non-null overrides phont and preset.
+    // The buffer stays valid for the AqShim_Synthesize call.
+    unsigned char *phont_data;
 
     // --- Aqtk10 Extra Settings ---
     int base;   // 基本素片 F1E/F2E/M1E (0/1/2)
@@ -130,6 +134,8 @@ struct AqSynthParam {
 `speed` is the speaking rate. All three engines read it. A non-zero AquesTalk10 preset uses the speed stored in that preset.
 
 `phont` is AquesTalk2 only, a UTF-8 path. Null or empty uses the file for `preset` in `phont/` next to the library. A non-empty path overrides the preset.
+
+`phont_data` is AquesTalk2 only. A non-null value is the phont file already in memory. It overrides `phont` and `preset`. AquesTalk2 reads the length from the phont itself. The buffer must stay valid until `AqShim_Synthesize` returns.
 
 `base`, `volume`, `pitch`, `accent`, `lmd`, and `fsc` apply only when the preset is `AQ10_CUSTOM`. `base` is the base fragment F1E/F2E/M1E (0/1/2). `volume` is 0–300, default 100. `pitch` is 20–200, default depends on the fragment. `accent` is 0–200, default depends on the fragment. `lmd` is 0–200, default 100. `fsc` is 50–200, default 100.
 

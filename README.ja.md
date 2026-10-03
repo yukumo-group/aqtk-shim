@@ -64,7 +64,7 @@ build/macos/aqtk_demo
 build/linux/aqtk_demo
 ```
 
-`AQTK_STAGE_PHONTS=OFF` にすると `phont/` をコピーしない。その場合は phont のパスを自分で渡す。
+`AQTK_STAGE_PHONTS=OFF` にすると `phont/` をコピーしない。その場合は phont のパスか、メモリ上の phont データを自分で渡す。
 
 インストール先の既定は `../third-party/<arch>`（`win64`、`win32`、`macos`、`linux64`、`linux32`）。`Aqsh`、リネームしたエンジンライブラリ、`phont/`、`Aqsh.h` が入る。
 
@@ -107,7 +107,11 @@ struct AqSynthParam {
     int speed;
 
     // aq2 custom phont path (UTF-8). Null or empty uses preset.
+    // phont_data overrides this path.
     char *phont;
+    // aq2 phont file contents already in memory. Non-null overrides phont and preset.
+    // The buffer stays valid for the AqShim_Synthesize call.
+    unsigned char *phont_data;
 
     // --- Aqtk10 Extra Settings ---
     int base;   // 基本素片 F1E/F2E/M1E (0/1/2)
@@ -130,6 +134,8 @@ struct AqSynthParam {
 `speed` は話速。3 つのエンジンともこの値を読む。AquesTalk10 で 0 以外のプリセットを使うと、話速はプリセット側の値になる。
 
 `phont` は AquesTalk2 のみ。UTF-8 のパス。ヌルまたは空文字のときは、ライブラリ横の `phont/` にある `preset` のファイルを使う。パスが空でなければプリセットより優先される。
+
+`phont_data` は AquesTalk2 のみ。ヌルでなければ、メモリ上の phont ファイル本体。`phont` とプリセットより優先される。長さは AquesTalk2 が phont 自身から読む。バッファは `AqShim_Synthesize` が戻るまで有効であること。
 
 `base`、`volume`、`pitch`、`accent`、`lmd`、`fsc` は `AQ10_CUSTOM` のときだけ有効。`base` は基本素片 F1E/F2E/M1E（0/1/2）。`volume` は 0–300、既定 100。`pitch` は 20–200、既定は素片による。`accent` は 0–200、既定は素片による。`lmd` は 0–200、既定 100。`fsc` は 50–200、既定 100。
 

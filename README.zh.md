@@ -64,7 +64,7 @@ build/macos/aqtk_demo
 build/linux/aqtk_demo
 ```
 
-`AQTK_STAGE_PHONTS=OFF` 时不复制 `phont/`，此时需要自行传入 phont 路径。
+`AQTK_STAGE_PHONTS=OFF` 时不复制 `phont/`，此时需要自行传入 phont 路径或内存中的 phont 数据。
 
 安装会把 `Aqsh`、重命名后的引擎库、`phont/` 和 `Aqsh.h` 放到 `../third-party/<arch>`（`win64`、`win32`、`macos`、`linux64`、`linux32`）：
 
@@ -107,7 +107,11 @@ struct AqSynthParam {
     int speed;
 
     // aq2 custom phont path (UTF-8). Null or empty uses preset.
+    // phont_data overrides this path.
     char *phont;
+    // aq2 phont file contents already in memory. Non-null overrides phont and preset.
+    // The buffer stays valid for the AqShim_Synthesize call.
+    unsigned char *phont_data;
 
     // --- Aqtk10 Extra Settings ---
     int base;   // 基本素片 F1E/F2E/M1E (0/1/2)
@@ -130,6 +134,8 @@ struct AqSynthParam {
 `speed` 是语速，三个引擎都读这个字段。AquesTalk10 使用非 0 预设时，语速来自预设。
 
 `phont` 只用于 AquesTalk2，内容是 UTF-8 路径。空指针或空字符串时使用 `preset` 对应的文件，文件在库旁边的 `phont/` 里。路径非空时覆盖预设。
+
+`phont_data` 只用于 AquesTalk2。非空时表示内存中的 phont 文件内容，并覆盖 `phont` 与预设。长度由 AquesTalk2 从 phont 自身读取。缓冲区须在 `AqShim_Synthesize` 返回前保持有效。
 
 `base`、`volume`、`pitch`、`accent`、`lmd`、`fsc` 只在 `AQ10_CUSTOM` 时生效。`base` 是基本素片 F1E/F2E/M1E（0/1/2）。`volume` 为 0–300，默认 100。`pitch` 为 20–200，默认随素片。`accent` 为 0–200，默认随素片。`lmd` 为 0–200，默认 100。`fsc` 为 50–200，默认 100。
 

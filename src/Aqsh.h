@@ -38,7 +38,7 @@ enum Aq1Preset {
 };
 
 // AquesTalk2 phont files staged in phont/ next to Aqsh.dll. 0 is aq_yukkuri.
-// A non-empty phont path overrides this preset.
+// A non-empty phont path overrides this preset. phont_data overrides both.
 enum Aq2Preset {
     AQ2_AQ_YUKKURI = 0,
     AQ2_AQ_DEFO1,
@@ -81,7 +81,11 @@ struct AqSynthParam {
     int speed;
     
     // aq2 custom phont path (UTF-8). Null or empty uses preset.
+    // phont_data overrides this path.
     char *phont;
+    // aq2 phont file contents already in memory. Non-null overrides phont and preset.
+    // The buffer stays valid for the AqShim_Synthesize call.
+    unsigned char *phont_data;
 
     // --- Aqtk10 Extra Settings ---
     int base;	// 基本素片 F1E/F2E/M1E (0/1/2)
