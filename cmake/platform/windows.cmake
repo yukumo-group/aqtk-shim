@@ -81,6 +81,8 @@ aqtk_renamed_implib("AquesTalk10_" "AquesTalk10" "${AQTK10_IMPLIB}")
 add_custom_target(aqtk_implibs DEPENDS "${AQTK10_IMPLIB}")
 
 function(aqtk_configure_aqsh target)
+    # Aqsh.h comments are UTF-8. MSVC otherwise uses the ANSI code page and warns C4819.
+    target_compile_options(${target} PRIVATE /utf-8)
     add_dependencies(${target} aqtk_implibs)
     target_link_libraries(${target} PRIVATE
         "${AQTK2_VENDOR_LIB}"
