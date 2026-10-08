@@ -1,6 +1,7 @@
 #include "aqtk1.h"
 
 #include "Aqsh.h"
+#include "env_keys.h"
 #include "module_dir.h"
 #include "synth_util.h"
 #include "wav_track.h"
@@ -113,8 +114,9 @@ unsigned char* aqtk1_synthe_utf8(const AqSynthParam* param, const char* text, in
         set_usr_key = voice->set_usr_key;
     }
 
-    apply_key(set_dev_key, param->DevKey);
-    apply_key(set_usr_key, param->UserKey);
+    const AqEnvKeys keys = env_keys(AQ_VER_1);
+    apply_key(set_dev_key, pick_key(param->DevKey, keys.dev));
+    apply_key(set_usr_key, pick_key(param->UserKey, keys.usr));
     unsigned char* wav = synthe(text, param->speed, size);
     if (wav) {
         wav_track(wav, free_wave);

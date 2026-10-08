@@ -77,7 +77,7 @@ cmake --install build/x64 --config Release
 `src/Aqsh.h` をインクルードし、`Aqsh` をリンクする。API は C。
 
 ```c
-AqShim_Init();
+AqShim_Init(NULL);
 
 AqSynthParam param = {};
 param.version = AQ_VER_10;
@@ -94,6 +94,24 @@ if (rc == 0) {
 
 AqShim_Shutdown();
 ```
+
+### 初期化
+
+`AqShim_Init(envPath)` はライセンスキーを一度だけ読み込む。`envPath` は `.env` ファイル、またはそれを置いたディレクトリ。ヌルまたは空文字なら作業ディレクトリの `.env` を読み、そのファイルは無くてもよい。パスを渡したときは存在が必要で、無ければ `AqShim_Init` は `-4` を返す。ファイルに無いキーは設定しない。`AqSynthParam` の `DevKey` / `UserKey` はファイルより優先される。
+
+| `.env` のキー | エンジン |
+|---|---|
+| `AQ01_DEV_KEY`、`AQ01_USR_KEY` | AquesTalk1 |
+| `AQ10_DEV_KEY`、`AQ10_USR_KEY` | AquesTalk10 |
+
+```ini
+AQ01_DEV_KEY=xxxx-xxxx-xxxx
+AQ01_USR_KEY=yyyy-yyyy-yyyy
+AQ10_DEV_KEY=zzzz-zzzz-zzzz
+AQ10_USR_KEY=wwww-wwww-wwww
+```
+
+AquesTalk2 にライセンスキーは無い。ファイルはプロセス単位で読むため、ファイルに無いキーは環境変数でも指定できる。
 
 ### パラメータ
 
@@ -139,7 +157,7 @@ struct AqSynthParam {
 
 `base`、`volume`、`pitch`、`accent`、`lmd`、`fsc` は `AQ10_CUSTOM` のときだけ有効。`base` は基本素片 F1E/F2E/M1E（0/1/2）。`volume` は 0–300、既定 100。`pitch` は 20–200、既定は素片による。`accent` は 0–200、既定は素片による。`lmd` は 0–200、既定 100。`fsc` は 50–200、既定 100。
 
-`DevKey` と `UserKey` は任意のライセンスキー。ヌルまたは空文字なら設定しない。
+`DevKey` と `UserKey` は任意のライセンスキー。ヌルまたは空文字なら設定せず、`.env` のキーが使われる。
 
 エンジンのライブラリは `Aqsh` と同じディレクトリに置く。ローダはそこから開く。
 
@@ -148,5 +166,7 @@ struct AqSynthParam {
 ## エラー
 
 `AqShim_Synthesize` は成功で 0 を返す。`-1` は引数がヌル、`-2` は未知の `version`、`-3` は音声ライブラリまたは phont を開けなかった場合。それ以外の非 0 はエンジンのエラーコードで、負の値。
+
+`AqShim_Init` は渡されたパスに `.env` が無いとき `-4` を返す。
 
 `AqShim_ErrorMessage(version, code)` はその失敗を `AQ1_<NAME>`、`AQ2_<NAME>`、`AQ10_<NAME>` の文字列で返す。同じエンジンでは、同じ失敗は同じ文字列になる。エンジン間で番号が違っても、意味が同じなら語幹は同じ。未知のコードは null。合成の戻り値か、AquesTalk のマニュアルにある正のエラーコードを渡す。

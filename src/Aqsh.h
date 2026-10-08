@@ -96,11 +96,15 @@ struct AqSynthParam {
     int fsc;	// 音程２(サンプリング周波数) 50-200 default:100
 
     // --- Licensing ---
+    // This will override the keys read from the .env file.
     char *DevKey;
     char *UserKey;
 };
 
-AQSH_API int AqShim_Init(void);
+// Loads the license keys from a .env file. envPath is the file or the
+// directory that holds it; null or empty reads .env from the working
+// directory. See the README for the key names.
+AQSH_API int AqShim_Init(const char* envPath);
 AQSH_API void AqShim_Shutdown(void);
 AQSH_API int AqShim_Synthesize(
     const char* text,

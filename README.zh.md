@@ -77,7 +77,7 @@ cmake --install build/x64 --config Release
 包含 `src/Aqsh.h` 并链接 `Aqsh`。接口是 C。
 
 ```c++
-AqShim_Init();
+AqShim_Init(NULL);
 
 AqSynthParam param = {};
 param.version = AQ_VER_10;
@@ -94,6 +94,24 @@ if (rc == 0) {
 
 AqShim_Shutdown();
 ```
+
+### 初始化
+
+`AqShim_Init(envPath)` 只加载一次许可密钥。`envPath` 可以是 `.env` 文件，也可以是存放它的目录。传空指针或空字符串时读取当前工作目录下的 `.env`，该文件可以不存在。给了路径就必须存在，否则 `AqShim_Init` 返回 `-4`。文件里没有的 key 就不设置，`AqSynthParam` 的 `DevKey` / `UserKey` 优先于文件。
+
+| `.env` 中的 key | 引擎 |
+|---|---|
+| `AQ01_DEV_KEY`、`AQ01_USR_KEY` | AquesTalk1 |
+| `AQ10_DEV_KEY`、`AQ10_USR_KEY` | AquesTalk10 |
+
+```ini
+AQ01_DEV_KEY=xxxx-xxxx-xxxx
+AQ01_USR_KEY=yyyy-yyyy-yyyy
+AQ10_DEV_KEY=zzzz-zzzz-zzzz
+AQ10_USR_KEY=wwww-wwww-wwww
+```
+
+AquesTalk2 没有许可密钥。文件按进程读取，因此文件没写的 key 也可以用系统环境变量提供。
 
 ### 可配置参数
 
@@ -139,7 +157,7 @@ struct AqSynthParam {
 
 `base`、`volume`、`pitch`、`accent`、`lmd`、`fsc` 只在 `AQ10_CUSTOM` 时生效。`base` 是基本素片 F1E/F2E/M1E（0/1/2）。`volume` 为 0–300，默认 100。`pitch` 为 20–200，默认随素片。`accent` 为 0–200，默认随素片。`lmd` 为 0–200，默认 100。`fsc` 为 50–200，默认 100。
 
-`DevKey` 和 `UserKey` 是可选的许可密钥。空指针或空字符串时不设置。
+`DevKey` 和 `UserKey` 是可选的许可密钥。空指针或空字符串时不设置，改用 `.env` 里的 key。
 
 引擎库必须和 `Aqsh` 放在同一目录，加载器从那里打开它们。
 
@@ -148,5 +166,7 @@ struct AqSynthParam {
 ## 错误
 
 `AqShim_Synthesize` 成功时返回 0。`-1` 表示参数为空，`-2` 表示未知的 `version`，`-3` 表示打不开音色或 phont。其他非 0 值是引擎错误码，为负数。
+
+`AqShim_Init` 在给定路径下没有 `.env` 时返回 `-4`。
 
 `AqShim_ErrorMessage(version, code)` 可以把引擎错误码转成字符串，格式为 `AQ1_<NAME>`、`AQ2_<NAME>` 或 `AQ10_<NAME>`。同一引擎上，同一种失败对应同一个字符串，即使两个引擎给它的编号不同。未知错误码返回 null。传入合成函数的返回值，或 AquesTalk 手册中的正数错误码，都可以。

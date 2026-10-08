@@ -91,7 +91,7 @@ int main() {
         {"aq10", "aq10.wav", AQ_VER_10, AQ10_F1},
     };
 
-    if (AqShim_Init() != 0) {
+    if (AqShim_Init(nullptr) != 0) {
         std::fprintf(stderr, "AqShim_Init failed\n");
         return 1;
     }

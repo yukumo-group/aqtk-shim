@@ -1,6 +1,7 @@
 #include "aqtk10.h"
 
 #include "Aqsh.h"
+#include "env_keys.h"
 #include "synth_util.h"
 #include "wav_track.h"
 
@@ -79,8 +80,9 @@ unsigned char* aqtk10_synthe_utf8(const AqSynthParam* param, const char* text, i
         return fail_wav(size);
     }
 
-    apply_key(AQ10_DEV_KEY, param->DevKey);
-    apply_key(AQ10_USR_KEY, param->UserKey);
+    const AqEnvKeys keys = env_keys(AQ_VER_10);
+    apply_key(AQ10_DEV_KEY, pick_key(param->DevKey, keys.dev));
+    apply_key(AQ10_USR_KEY, pick_key(param->UserKey, keys.usr));
     unsigned char* wav = AQ10_SYNTHE(&voice, text, size);
     if (wav) {
         wav_track(wav, AQ10_FREE);

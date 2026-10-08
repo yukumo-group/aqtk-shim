@@ -77,7 +77,7 @@ cmake --install build/x64 --config Release
 Include `src/Aqsh.h` and link `Aqsh`. The API is C.
 
 ```c
-AqShim_Init();
+AqShim_Init(NULL);
 
 AqSynthParam param = {};
 param.version = AQ_VER_10;
@@ -94,6 +94,24 @@ if (rc == 0) {
 
 AqShim_Shutdown();
 ```
+
+### Init
+
+`AqShim_Init(envPath)` loads the license keys once. `envPath` is the `.env` file or the directory that holds it. Null or empty reads `.env` from the working directory, and that file may be absent. A path that was given has to be there, otherwise `AqShim_Init` returns `-4`. A key the file does not set stays unset, and `DevKey` / `UserKey` in `AqSynthParam` override the file.
+
+| `.env` key | Engine |
+|---|---|
+| `AQ01_DEV_KEY`, `AQ01_USR_KEY` | AquesTalk1 |
+| `AQ10_DEV_KEY`, `AQ10_USR_KEY` | AquesTalk10 |
+
+```ini
+AQ01_DEV_KEY=xxxx-xxxx-xxxx
+AQ01_USR_KEY=yyyy-yyyy-yyyy
+AQ10_DEV_KEY=zzzz-zzzz-zzzz
+AQ10_USR_KEY=wwww-wwww-wwww
+```
+
+AquesTalk2 has no license key. The file is read from the process, so a key also set in the environment is used when the file leaves it out.
 
 ### Parameters
 
@@ -139,7 +157,7 @@ struct AqSynthParam {
 
 `base`, `volume`, `pitch`, `accent`, `lmd`, and `fsc` apply only when the preset is `AQ10_CUSTOM`. `base` is the base fragment F1E/F2E/M1E (0/1/2). `volume` is 0–300, default 100. `pitch` is 20–200, default depends on the fragment. `accent` is 0–200, default depends on the fragment. `lmd` is 0–200, default 100. `fsc` is 50–200, default 100.
 
-`DevKey` and `UserKey` are optional license keys. Null or empty leaves them unset.
+`DevKey` and `UserKey` are optional license keys. Null or empty leaves them unset, and the key from `.env` is used instead.
 
 The engine libraries must stay next to `Aqsh`. The loader opens them from that directory.
 
@@ -148,5 +166,7 @@ The engine libraries must stay next to `Aqsh`. The loader opens them from that d
 ## Errors
 
 `AqShim_Synthesize` returns 0 on success. `-1` is a null argument, `-2` is an unknown `version`, and `-3` means the voice or phont could not be opened. Any other non-zero value is the engine's error code, and it is negative.
+
+`AqShim_Init` returns `-4` when the path it was given has no `.env`.
 
 `AqShim_ErrorMessage(version, code)` returns that failure as `AQ1_<NAME>`, `AQ2_<NAME>`, or `AQ10_<NAME>`. One engine uses one string for one failure, including when two engines number the same failure differently. An unknown code returns null. Pass the synthesize return value, or the positive code from the AquesTalk manual.

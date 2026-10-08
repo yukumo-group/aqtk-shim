@@ -27,6 +27,7 @@ endif()
 add_library(Aqsh SHARED
     src/Aqsh.cpp
     src/aq_error.cpp
+    src/env_keys.cpp
     src/aqtk1.cpp
     src/aqtk2.cpp
     src/aqtk10.cpp
