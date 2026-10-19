@@ -17,14 +17,14 @@
 extern "C" {
 #endif
 
-enum AqVersion {
+typedef enum AqVersion {
     AQ_VER_1 = 1,
     AQ_VER_2 = 2,
     AQ_VER_10 = 10
-};
+} AqVersion;
 
 // AquesTalk1 voice libraries. 0 is f1 so a zeroed AqSynthParam keeps that voice.
-enum Aq1Preset {
+typedef enum Aq1Preset {
     AQ1_F1 = 0,
     AQ1_F2,
     AQ1_F3,
@@ -35,11 +35,11 @@ enum Aq1Preset {
     AQ1_IMD1,
     AQ1_JGR,
     AQ1_PRESET_COUNT
-};
+} Aq1Preset;
 
 // AquesTalk2 phont files staged in phont/ next to Aqsh.dll. 0 is aq_yukkuri.
 // A non-empty phont path overrides this preset. phont_data overrides both.
-enum Aq2Preset {
+typedef enum Aq2Preset {
     AQ2_AQ_YUKKURI = 0,
     AQ2_AQ_DEFO1,
     AQ2_AQ_F1C,
@@ -57,10 +57,10 @@ enum Aq2Preset {
     AQ2_AR_MF2,
     AQ2_AR_RM3,
     AQ2_PRESET_COUNT
-};
+} Aq2Preset;
 
 // AquesTalk10 gVoice_* presets. 0 uses base/speed/volume/pitch/accent/lmd/fsc.
-enum Aq10Preset {
+typedef enum Aq10Preset {
     AQ10_CUSTOM = 0,
     AQ10_F1,
     AQ10_F2,
@@ -70,9 +70,9 @@ enum Aq10Preset {
     AQ10_R1,
     AQ10_R2,
     AQ10_PRESET_COUNT
-};
+} Aq10Preset;
 
-struct AqSynthParam {
+typedef struct AqSynthParam {
     AqVersion version;
 
     // --- Aqtk1 + shared params ---
@@ -99,7 +99,7 @@ struct AqSynthParam {
     // This will override the keys read from the .env file.
     char *DevKey;
     char *UserKey;
-};
+} AqSynthParam;
 
 // Loads the license keys from a .env file. envPath is the file or the
 // directory that holds it; null or empty reads .env from the working
